@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef, useEffect } from "react";
+import React, { Component, useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import PropTypes from "prop-types";
 import {
   StyleSheet,
@@ -17,7 +17,7 @@ import {
   DEFAULT_ACTIVE_OPACITY
 } from "./shared";
 
-const ActionButton = props => {
+const ActionButton = forwardRef((props, ref) => {
   const [, setResetToken] = useState(props.resetToken);
   const [active, setActive] = useState(props.active);
   const useNativeDriver = props.useNativeDriver || false;
@@ -279,8 +279,14 @@ const ActionButton = props => {
     }, 250);
   };
 
+  // add animateButton & reset functions to ref of this functional component
+  useImperativeHandle(ref, () => ({
+    animateButton,
+    reset
+  }));
+
   return (
-    <View pointerEvents="box-none" style={[getOverlayStyles(), props.style]}>
+    <View pointerEvents="box-none" style={[getOverlayStyles(), props.style]} >
       <Animated.View
         pointerEvents="none"
         style={[
@@ -312,7 +318,7 @@ const ActionButton = props => {
       </View>
     </View>
   );
-};
+});
 
 ActionButton.Item = ActionButtonItem;
 
